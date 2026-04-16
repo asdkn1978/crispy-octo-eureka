@@ -11,8 +11,8 @@ export default function Wallet() {
 
   async function load() {
     const [w, t] = await Promise.all([api('/api/wallet'), api('/api/wallet/transactions')]);
-    setWallet(w.data || null);
-    setTxns(t.data || []);
+    setWallet(w.data || w);
+    setTxns(t.data || t.transactions || []);
     setLoading(false);
   }
 

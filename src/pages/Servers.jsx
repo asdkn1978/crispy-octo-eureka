@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
-import { Plus, Power, RotateCw, Trash2, Server } from 'lucide-react';
+import { Plus, RotateCw, Trash2, Server } from 'lucide-react';
 
 const planOptions = [
   { id: 'starter_s', name: 'Starter S', price: 50000 },
@@ -20,7 +20,7 @@ export default function Servers() {
 
   async function loadServers() {
     const res = await api('/api/vps');
-    setServers(res.data || []);
+    setServers(res.data || res.instances || []);
     setLoading(false);
   }
 
@@ -28,7 +28,8 @@ export default function Servers() {
 
   async function handleCreate() {
     if (!selectedPlan) return;
-    await api('/api/vps', { method: 'POST', body: JSON.stringify({ plan: selectedPlan }) });
+    const p = planOptions.find(x => x.id === selectedPlan);
+    await api('/api/vps', { method: 'POST', body: JSON.stringify({ plan_id: selectedPlan, name: p?.name + '-' + Date.now().toString(36) }) });
     setShowCreate(false);
     loadServers();
   }

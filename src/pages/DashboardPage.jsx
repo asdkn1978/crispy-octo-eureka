@@ -13,9 +13,9 @@ export default function Dashboard() {
       try {
         const [servers, wallet] = await Promise.all([api('/api/vps'), api('/api/wallet')]);
         setStats({
-          servers: servers.data?.length || 0,
-          active: servers.data?.filter(s => s.status === 'running').length || 0,
-          balance: wallet.data?.balance || 0,
+          servers: (servers.data || servers.instances || []).length,
+          active: 0,
+          balance: wallet.balance || wallet.data?.balance || 0,
           monthly: 0
         });
       } catch {}
