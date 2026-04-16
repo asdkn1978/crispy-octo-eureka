@@ -29,9 +29,12 @@ export default function Servers() {
   async function handleCreate() {
     if (!selectedPlan) return;
     const p = planOptions.find(x => x.id === selectedPlan);
-    await api('/api/vps', { method: 'POST', body: JSON.stringify({ plan_id: selectedPlan, name: p?.name + '-' + Date.now().toString(36) }) });
+    const res = await api('/api/vps', { method: 'POST', body: JSON.stringify({ plan_id: selectedPlan, name: p?.name + '-' + Date.now().toString(36) }) });
     setShowCreate(false);
-    loadServers();
+    if (res.success) {
+      setServers(prev => [...prev, { name: res.data.name, ip: res.data.ip, plan: selectedPlan, status: res.data.status || 'creating' }]);
+    }
+    setSelectedPlan('');
   }
 
   return (
