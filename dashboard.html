@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AveraCloud — Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-primary:#0a0f1e;--bg-card:#111827;--bg-card2:#1a2235;--accent:#22C55E;--accent-dim:#16a34a;--text:#e2e8f0;--text-dim:#94a3b8;--border:#1e293b;--danger:#ef4444;--warn:#f59e0b;--radius:10px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg-primary);color:var(--text);min-height:100vh;display:flex;overflow:hidden}
+a{color:var(--accent);text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+/* Sidebar */
+.sidebar{width:240px;min-height:100vh;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;transition:transform .3s;z-index:50;position:fixed;top:0;left:0;bottom:0}
+.sidebar .logo{padding:0 20px 24px;font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sidebar nav{flex:1;display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.sidebar nav button{background:none;border:none;color:var(--text-dim);padding:12px 16px;border-radius:var(--radius);text-align:left;font-size:14px;display:flex;align-items:center;gap:10px;transition:all .2s;width:100%}
+.sidebar nav button:hover,.sidebar nav button.active{background:rgba(34,197,94,.1);color:var(--accent)}
+.sidebar nav button.active{font-weight:600}
+.sidebar .logout{padding:12px 16px;margin:0 8px;border-top:1px solid var(--border);margin-top:auto;padding-top:16px}
+.sidebar .logout button{background:none;border:none;color:var(--danger);font-size:14px;width:100%;text-align:left;padding:8px 16px;border-radius:var(--radius);transition:background .2s}
+.sidebar .logout button:hover{background:rgba(239,68,68,.1)}
+/* Hamburger */
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:60;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:20px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40}
+/* Main */
+.main{margin-left:240px;flex:1;padding:28px;overflow-y:auto;height:100vh;width:calc(100% - 240px)}
+.page{display:none}.page.active{display:block}
+/* Cards */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.stat-card .label{font-size:13px;color:var(--text-dim);margin-bottom:6px}
+.stat-card .value{font-size:24px;font-weight:700}
+.stat-card .value.green{color:var(--accent)}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card h3{margin-bottom:14px;font-size:16px}
+/* Table */
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:14px}
+th{color:var(--text-dim);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge.green{background:rgba(34,197,94,.15);color:#22C55E}
+.badge.yellow{background:rgba(245,158,11,.15);color:#f59e0b}
+.badge.red{background:rgba(239,68,68,.15);color:#ef4444}
+/* Buttons */
+.btn{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;border:none;transition:all .2s}
+.btn-primary{background:var(--accent);color:#000}.btn-primary:hover{background:var(--accent-dim)}
+.btn-secondary{background:var(--bg-card2);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{border-color:var(--accent)}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid transparent}.btn-danger:hover{border-color:var(--danger)}
+.btn-sm{padding:7px 14px;font-size:13px}
+.quick-actions{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:680px;width:95%;max-height:90vh;overflow-y:auto}
+.modal h2{margin-bottom:20px}
+.steps{display:flex;gap:8px;margin-bottom:24px}
+.step-dot{width:32px;height:32px;border-radius:50%;background:var(--bg-card2);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.step-dot.active{background:var(--accent);color:#000}
+.step-line{flex:1;height:2px;background:var(--border);align-self:center;margin:0 4px}
+.step-line.done{background:var(--accent)}
+.modal-step{display:none}.modal-step.active{display:block}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.plan-card{background:var(--bg-card2);border:2px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .2s;text-align:center}
+.plan-card:hover{border-color:var(--text-dim)}
+.plan-card.selected{border-color:var(--accent);background:rgba(34,197,94,.05)}
+.plan-card .name{font-weight:700;font-size:15px;margin-bottom:8px}
+.plan-card .specs{font-size:12px;color:var(--text-dim);margin-bottom:8px;line-height:1.6}
+.plan-card .price{font-size:18px;font-weight:700;color:var(--accent)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;color:var(--text-dim);margin-bottom:6px}
+.form-group input,.form-group select{width:100%;padding:10px 14px;background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+.form-row{display:flex;gap:16px}.form-row .form-group{flex:1}
+.modal-actions{display:flex;justify-content:space-between;margin-top:24px}
+/* Wallet */
+.wallet-balance{background:linear-gradient(135deg,#16a34a,#22C55E);border-radius:var(--radius);padding:28px;color:#000;margin-bottom:20px}
+.wallet-balance .label{font-size:14px;opacity:.8;margin-bottom:4px}
+.wallet-balance .amount{font-size:36px;font-weight:800}
+.wallet-topup{display:flex;gap:12px;margin-bottom:20px}
+.wallet-topup input{flex:1}
+.tx-list{margin-top:16px}
+/* Settings */
+.settings-section{margin-bottom:28px}
+.settings-section h3{margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+/* Activity */
+.activity-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border:none}
+.activity-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.activity-icon.green{background:rgba(34,197,94,.15);color:var(--accent)}
+.activity-icon.blue{background:rgba(59,130,246,.15);color:#3b82f6}
+.activity-icon.yellow{background:rgba(245,158,11,.15);color:var(--warn)}
+.activity-text{font-size:14px}.activity-time{font-size:12px;color:var(--text-dim);margin-top:2px}
+/* Responsive */
+@media(max-width:768px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.open{transform:translateX(0)}
+.overlay.open{display:block}
+.hamburger{display:block}
+.main{margin-left:0;width:100%;padding:20px;padding-top:60px}
+.plan-grid{grid-template-columns:1fr 1fr}
+.form-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- Hamburger -->
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">☁️ AveraCloud<div style="font-size:11px;color:var(--text-dim);margin-top:2px" id="sidebarUser"></div></div>
+  <nav>
+    <button class="active" onclick="showPage('dashboard')">📊 Dashboard</button>
+    <button onclick="showPage('servers')">🖥️ Server Saya</button>
+    <button onclick="showPage('wallet')">💰 Wallet</button>
+    <button onclick="showPage('invoice')">📄 Invoice</button>
+    <button onclick="showPage('settings')">⚙️ Pengaturan</button>
+  </nav>
+  <div class="logout"><button id="sidebarLogout" onclick="logout()">🚪 Keluar</button></div>
+</aside>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Dashboard -->
+  <div class="page active" id="page-dashboard">
+    <h1>Selamat Datang! 👋</h1>
+    <p style="color:var(--text-dim);margin:6px 0 4px">Panel kontrol AveraCloud kamu</p>
+    <div class="stats">
+      <div class="stat-card"><div class="label">Total Server</div><div class="value">3</div></div>
+      <div class="stat-card"><div class="label">Server Aktif</div><div class="value green">2</div></div>
+      <div class="stat-card"><div class="label">Saldo</div><div class="value">Rp500.000</div></div>
+      <div class="stat-card"><div class="label">Pengeluaran Bulan Ini</div><div class="value">Rp240.000</div></div>
+    </div>
+    <div class="quick-actions">
+      <button class="btn btn-primary" onclick="showPage('servers');openCreateModal()">+ Buat Server</button>
+      <button class="btn btn-secondary" onclick="showPage('wallet')">💰 Top Up Saldo</button>
+      <button class="btn btn-secondary" onclick="showPage('invoice')">📄 Lihat Invoice</button>
+    </div>
+    <div class="card">
+      <h3>🔔 Aktivitas Terbaru</h3>
+      <div class="activity-item">
+        <div class="activity-icon green">🖥️</div>
+        <div><div class="activity-text">Server <strong>web-prod-01</strong> berjalan normal</div><div class="activity-time">2 menit lalu</div></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon blue">💳</div>
+        <div><div class="activity-text">Top up saldo <strong>Rp500.000</strong> berhasil</div><div class="activity-time">1 jam lalu</div></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon yellow">⚠️</div>
+        <div><div class="activity-text">Server <strong>staging-01</strong> berhenti — CPU usage 98%</div><div class="activity-time">3 jam lalu</div></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon green">✅</div>
+        <div><div class="activity-text">Invoice <strong>INV-2026-0042</strong> berhasil dibayar</div><div class="activity-time">Kemarin, 14:30</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Servers -->
+  <div class="page" id="page-servers">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+      <h1>🖥️ Server Saya</h1>
+      <button class="btn btn-primary" onclick="openCreateModal()">+ Buat Server Baru</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Nama</th><th>Plan</th><th>Region</th><th>IP</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>web-prod-01</strong></td><td>Pro S</td><td>Jakarta</td><td>103.xx.xx.10</td>
+            <td><span class="badge green">● Aktif</span></td>
+            <td><button class="btn btn-sm btn-secondary" onclick="alert('Console segera hadir!')">Console</button></td>
+          </tr>
+          <tr>
+            <td><strong>api-prod-01</strong></td><td>Enterprise</td><td>Singapura</td><td>103.xx.xx.22</td>
+            <td><span class="badge green">● Aktif</span></td>
+            <td><button class="btn btn-sm btn-secondary" onclick="alert('Console segera hadir!')">Console</button></td>
+          </tr>
+          <tr>
+            <td><strong>staging-01</strong></td><td>Standard M</td><td>Jakarta</td><td>103.xx.xx.35</td>
+            <td><span class="badge red">● Berhenti</span></td>
+            <td><button class="btn btn-sm btn-danger" onclick="alert('Menyalakan server...')">Nyalakan</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Wallet -->
+  <div class="page" id="page-wallet">
+    <h1>💰 Wallet</h1>
+    <div class="wallet-balance">
+      <div class="label">Saldo Tersedia</div>
+      <div class="amount">Rp500.000</div>
+    </div>
+    <div class="card">
+      <h3>Top Up Saldo</h3>
+      <div class="wallet-topup">
+        <input type="number" id="topupAmount" placeholder="Masukkan nominal (min Rp50.000)" style="flex:1;padding:10px 14px;background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
+        <button class="btn btn-primary" onclick="doTopUp()">Top Up</button>
+      </div>
+      <p style="font-size:13px;color:var(--text-dim);margin-top:6px">Pembayaran via transfer bank (BCA, Mandiri, BNI) atau e-wallet (GoPay, OVO, Dana)</p>
+    </div>
+    <div class="card">
+      <h3>📋 Riwayat Transaksi</h3>
+      <table>
+        <thead><tr><th>Tanggal</th><th>Deskripsi</th><th>Jumlah</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>15 Apr 2026</td><td>Top Up Saldo</td><td style="color:var(--accent)">+Rp500.000</td><td><span class="badge green">Berhasil</span></td></tr>
+          <tr><td>01 Apr 2026</td><td>Perpanjang web-prod-01</td><td style="color:var(--danger)">-Rp130.000</td><td><span class="badge green">Berhasil</span></td></tr>
+          <tr><td>01 Apr 2026</td><td>Perpanjang api-prod-01</td><td style="color:var(--danger)">-Rp325.000</td><td><span class="badge green">Berhasil</span></td></tr>
+          <tr><td>20 Mar 2026</td><td>Top Up Saldo</td><td style="color:var(--accent)">+Rp1.000.000</td><td><span class="badge green">Berhasil</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Invoice -->
+  <div class="page" id="page-invoice">
+    <h1>📄 Invoice</h1>
+    <div class="card">
+      <table>
+        <thead><tr><th>No. Invoice</th><th>Tanggal</th><th>Deskripsi</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody>
+          <tr><td>INV-2026-0042</td><td>01 Apr 2026</td><td>web-prod-01 — Pro S (1 bulan)</td><td>Rp130.000</td><td><span class="badge green">Lunas</span></td><td><button class="btn btn-sm btn-secondary">Unduh</button></td></tr>
+          <tr><td>INV-2026-0041</td><td>01 Apr 2026</td><td>api-prod-01 — Enterprise (1 bulan)</td><td>Rp325.000</td><td><span class="badge green">Lunas</span></td><td><button class="btn btn-sm btn-secondary">Unduh</button></td></tr>
+          <tr><td>INV-2026-0043</td><td>01 Mei 2026</td><td>staging-01 — Standard M (1 bulan)</td><td>Rp90.000</td><td><span class="badge yellow">Menunggu</span></td><td><button class="btn btn-sm btn-primary">Bayar</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="page" id="page-settings">
+    <h1>⚙️ Pengaturan</h1>
+    <div class="card settings-section">
+      <h3>👤 Profil</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Nama Lengkap</label><input type="text" value="Andra Pratama"></div>
+        <div class="form-group"><label>Email</label><input type="email" value="andra@example.com"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>No. Telepon</label><input type="tel" value="+62 812-xxxx-xxxx"></div>
+        <div class="form-group"><label>Perusahaan</label><input type="text" value="PT MJA Global"></div>
+      </div>
+      <button class="btn btn-primary">Simpan Profil</button>
+    </div>
+    <div class="card settings-section">
+      <h3>🔒 Ubah Password</h3>
+      <div class="form-group"><label>Password Lama</label><input type="password" placeholder="Masukkan password lama"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Password Baru</label><input type="password" placeholder="Password baru"></div>
+        <div class="form-group"><label>Konfirmasi Password</label><input type="password" placeholder="Ulangi password baru"></div>
+      </div>
+      <button class="btn btn-primary">Ubah Password</button>
+    </div>
+    <div class="card settings-section">
+      <h3>🔑 API Keys</h3>
+      <p style="color:var(--text-dim);margin-bottom:12px">Kelola API key untuk akses programmatic ke layanan AveraCloud.</p>
+      <button class="btn btn-secondary" onclick="alert('Fitur API key segera hadir!')">+ Buat API Key Baru</button>
+      <div style="margin-top:16px;padding:20px;border:1px dashed var(--border);border-radius:var(--radius);text-align:center;color:var(--text-dim)">
+        <p>Belum ada API key yang dibuat</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Create Server Modal -->
+<div class="modal-bg" id="modalCreate">
+  <div class="modal">
+    <h2>🚀 Buat Server Baru</h2>
+    <div class="steps">
+      <div class="step-dot active" id="sd1">1</div><div class="step-line" id="sl1"></div>
+      <div class="step-dot" id="sd2">2</div><div class="step-line" id="sl2"></div>
+      <div class="step-dot" id="sd3">3</div>
+    </div>
+
+    <!-- Step 1: Choose Plan -->
+    <div class="modal-step active" id="ms1">
+      <h3>Pilih Paket</h3>
+      <div class="plan-grid" id="planGrid"></div>
+    </div>
+
+    <!-- Step 2: Config -->
+    <div class="modal-step" id="ms2">
+      <h3>Konfigurasi Server</h3>
+      <div class="form-group"><label>Nama Server</label><input type="text" id="serverName" placeholder="contoh: web-prod-01"></div>
+      <div class="form-group">
+        <label>Region</label>
+        <select id="serverRegion">
+          <option>Jakarta (ID)</option>
+          <option>Singapura (SG)</option>
+          <option>Tokyo (JP)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>OS</label>
+        <select id="serverOS">
+          <option>Ubuntu 22.04 LTS</option>
+          <option>Debian 12</option>
+          <option>CentOS Stream 9</option>
+          <option>AlmaLinux 9</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Step 3: Confirm -->
+    <div class="modal-step" id="ms3">
+      <h3>Konfirmasi & Pembayaran</h3>
+      <div id="confirmSummary" style="background:var(--bg-card2);border-radius:var(--radius);padding:20px;margin-bottom:16px"></div>
+      <div style="background:var(--bg-card2);border-radius:var(--radius);padding:16px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:15px">Total:</span>
+        <span style="font-size:22px;font-weight:800;color:var(--accent)" id="confirmPrice">Rp0</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="modalBack" onclick="modalPrev()" style="visibility:hidden">← Kembali</button>
+      <button class="btn btn-primary" id="modalNext" onclick="modalNextBtn()">Lanjut →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Plans
+const plans=[
+  {name:'Starter S',cpu:'2 Core',ram:'2 GB',disk:'40 GB',price:50000},
+  {name:'Starter M',cpu:'2 Core',ram:'2 GB',disk:'50 GB',price:65000},
+  {name:'Standard S',cpu:'2 Core',ram:'4 GB',disk:'60 GB',price:80000},
+  {name:'Standard M',cpu:'2 Core',ram:'4 GB',disk:'70 GB',price:90000},
+  {name:'Pro S',cpu:'2 Core',ram:'8 GB',disk:'80 GB',price:130000},
+  {name:'Pro M',cpu:'2 Core',ram:'8 GB',disk:'100 GB',price:160000},
+  {name:'Enterprise',cpu:'4 Core',ram:'8 GB',disk:'180 GB',price:325000}
+];
+let selectedPlan=null,modalStep=1;
+
+function fmt(n){return'Rp'+n.toLocaleString('id-ID')}
+
+// Render plans
+const pg=document.getElementById('planGrid');
+plans.forEach((p,i)=>{
+  pg.innerHTML+=`<div class="plan-card" onclick="selectPlan(${i})" id="pc${i}">
+    <div class="name">${p.name}</div>
+    <div class="specs">${p.cpu} • ${p.ram} RAM<br>${p.disk} SSD NVMe</div>
+    <div class="price">${fmt(p.price)}<span style="font-size:12px;font-weight:400;color:var(--text-dim)">/bln</span></div>
+  </div>`;
+});
+
+function selectPlan(i){
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('pc'+i).classList.add('selected');
+  selectedPlan=plans[i];
+}
+
+// Navigation
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.sidebar nav button').forEach(b=>b.classList.remove('active'));
+  const map={dashboard:0,servers:1,wallet:2,invoice:3,settings:4};
+  document.querySelectorAll('.sidebar nav button')[map[name]].classList.add('active');
+  if(window.innerWidth<=768)toggleSidebar();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+// Modal
+function openCreateModal(){
+  modalStep=1;selectedPlan=null;
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  updateModal();document.getElementById('modalCreate').classList.add('show');
+}
+function closeModal(){document.getElementById('modalCreate').classList.remove('show')}
+
+function updateModal(){
+  for(let i=1;i<=3;i++){
+    document.getElementById('ms'+i).classList.toggle('active',i===modalStep);
+    document.getElementById('sd'+i).classList.toggle('active',i<=modalStep);
+  }
+  document.getElementById('sl1').classList.toggle('done',modalStep>=2);
+  document.getElementById('sl2').classList.toggle('done',modalStep>=3);
+  document.getElementById('modalBack').style.visibility=modalStep>1?'visible':'hidden';
+  const nb=document.getElementById('modalNext');
+  nb.textContent=modalStep===3?'💰 Bayar & Buat Server':'Lanjut →';
+
+  if(modalStep===3&&selectedPlan){
+    const name=document.getElementById('serverName').value||'—';
+    const region=document.getElementById('serverRegion').value;
+    const os=document.getElementById('serverOS').value;
+    document.getElementById('confirmSummary').innerHTML=`
+      <div style="margin-bottom:10px"><strong>Server:</strong> ${name}</div>
+      <div style="margin-bottom:10px"><strong>Paket:</strong> ${selectedPlan.name} — ${selectedPlan.cpu}, ${selectedPlan.ram}, ${selectedPlan.disk} SSD</div>
+      <div style="margin-bottom:10px"><strong>Region:</strong> ${region}</div>
+      <div><strong>OS:</strong> ${os}</div>`;
+    document.getElementById('confirmPrice').textContent=fmt(selectedPlan.price)+'/bln';
+  }
+}
+
+function modalNextBtn(){
+  if(modalStep===1){if(!selectedPlan){alert('Pilih paket terlebih dahulu!');return}modalStep=2}
+  else if(modalStep===2){
+    if(!document.getElementById('serverName').value){alert('Masukkan nama server!');return}modalStep=3
+  }
+  else{alert('Server berhasil dibuat! 🎉');closeModal();return}
+  updateModal();
+}
+function modalPrev(){if(modalStep>1){modalStep--;updateModal()}}
+
+// ===== API CONNECTION =====
+const API_BASE = '';
+
+async function api(path, opts = {}) {
+  const token = localStorage.getItem('ac_token');
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetch(API_BASE + path, { ...opts, headers });
+  if (res.status === 401) { localStorage.removeItem('ac_token'); showLoginModal(); }
+  return res.json();
+}
+
+// ===== AUTH =====
+function showLoginModal() {
+  document.getElementById('loginModal').style.display = 'flex';
+}
+function hideLoginModal() {
+  document.getElementById('loginModal').style.display = 'none';
+}
+function toggleAuthMode() {
+  const isLogin = document.getElementById('authLoginFields').style.display !== 'none';
+  document.getElementById('authLoginFields').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('authRegisterFields').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('authToggleText').textContent = isLogin ? 'Sudah punya akun? Login' : 'Belum punya akun? Daftar';
+  document.getElementById('authSubmitBtn').textContent = isLogin ? 'Daftar' : 'Login';
+  document.getElementById('authTitle').textContent = isLogin ? 'Buat Akun Baru' : 'Login ke AveraCloud';
+}
+async function handleAuth(e) {
+  e.preventDefault();
+  const isLogin = document.getElementById('authLoginFields').style.display !== 'none';
+  const btn = document.getElementById('authSubmitBtn');
+  btn.textContent = 'Memuat...'; btn.disabled = true;
+  try {
+    let res;
+    if (isLogin) {
+      res = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email: document.getElementById('authEmail').value, password: document.getElementById('authPassword').value }) });
+    } else {
+      res = await api('/api/auth/register', { method: 'POST', body: JSON.stringify({ email: document.getElementById('authEmail').value, password: document.getElementById('authPassword').value, full_name: document.getElementById('authFullName').value, phone: document.getElementById('authPhone').value }) });
+      if (res.success) res = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email: document.getElementById('authEmail').value, password: document.getElementById('authPassword').value }) });
+    }
+    if (res.success && res.data && res.data.token) {
+      localStorage.setItem('ac_token', res.data.token);
+      localStorage.setItem('ac_user', JSON.stringify(res.data.user));
+      hideLoginModal(); loadDashboard();
+    } else { document.getElementById('authError').textContent = res.error || 'Login gagal'; }
+  } catch (err) { document.getElementById('authError').textContent = 'Koneksi gagal'; }
+  btn.textContent = isLogin ? 'Login' : 'Daftar'; btn.disabled = false;
+}
+function logout() {
+  localStorage.removeItem('ac_token'); localStorage.removeItem('ac_user');
+  showLoginModal();
+}
+
+// ===== LOAD DATA =====
+function getUser() { try { return JSON.parse(localStorage.getItem('ac_user')); } catch { return null; } }
+
+function loadDashboard() {
+  const user = getUser();
+  if (user) {
+    document.getElementById('sidebarUser').textContent = user.full_name || user.email;
+    document.getElementById('sidebarLogout').onclick = logout;
+  }
+  loadPage('dashboard');
+}
+
+async function loadPage(name) {
+  if (name === 'dashboard') {
+    try {
+      const [wallet, vps] = await Promise.all([api('/api/wallet/'), api('/api/vps/')]);
+      if (wallet.success) {
+        document.querySelectorAll('.stat-card')[2].querySelector('.value').textContent = fmt(wallet.balance);
+      }
+      if (vps.success && vps.instances) {
+        document.querySelectorAll('.stat-card')[0].querySelector('.value').textContent = vps.instances.length;
+        document.querySelectorAll('.stat-card')[1].querySelector('.value').textContent = vps.instances.filter(i => i.Status === 'running').length;
+      }
+    } catch(e) { console.log('Dashboard load error:', e); }
+  } else if (name === 'servers') {
+    try {
+      const res = await api('/api/vps/');
+      if (res.success && res.instances) {
+        const tbody = document.querySelector('#page-servers tbody');
+        if (res.instances.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-dim)">Belum ada server. Klik + Buat Server Baru untuk mulai.</td></tr>';
+        } else {
+          tbody.innerHTML = res.instances.map(s => `<tr><td><strong>${esc(s.InstanceName||s.InstanceId)}</strong></td><td>—</td><td>SG</td><td>${esc(s.PublicIps||'-')}</td><td><span class="badge ${s.Status==='running'?'green':'red'}">● ${s.Status==='running'?'Aktif':'Berhenti'}</span></td><td><button class="btn btn-sm btn-secondary" onclick="api('/api/vps/${s.InstanceId}/restart',{method:'POST'}).then(r=>alert(r.success?'Restarting...':r.error))">Restart</button> <button class="btn btn-sm btn-danger" onclick="if(confirm('Hapus server?'))api('/api/vps/${s.InstanceId}',{method:'DELETE'}).then(r=>{if(r.success)loadPage('servers')})">Hapus</button></td></tr>`).join('');
+        }
+      }
+    } catch(e) {}
+  } else if (name === 'wallet') {
+    try {
+      const [w, txs] = await Promise.all([api('/api/wallet/'), api('/api/wallet/transactions')]);
+      if (w.success) {
+        document.querySelector('.wallet-balance .amount').textContent = fmt(w.balance);
+      }
+      if (txs.success && txs.transactions) {
+        const tbody = document.querySelector('#page-wallet tbody:last-of-type');
+        if (txs.transactions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-dim)">Belum ada transaksi</td></tr>';
+        } else {
+          tbody.innerHTML = txs.transactions.map(t => `<tr><td>${new Date(t.created_at).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})}</td><td>${esc(t.description)}</td><td style="color:${t.type==='topup'?'var(--accent)':'var(--danger)'}">${t.type==='topup'?'+':'-'}${fmt(t.amount)}</td><td><span class="badge ${t.status==='completed'?'green':'yellow'}">${t.status==='completed'?'Berhasil':'Pending'}</span></td></tr>`).join('');
+        }
+      }
+    } catch(e) {}
+  } else if (name === 'settings') {
+    try {
+      const user = getUser();
+      if (user) {
+        document.querySelector('#page-settings input[type="text"]').value = user.full_name || '';
+        document.querySelector('#page-settings input[type="email"]').value = user.email || '';
+        document.querySelector('#page-settings input[type="tel"]').value = user.phone || '';
+      }
+    } catch(e) {}
+  }
+}
+
+function esc(s) { if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// Override showPage to load data
+const _origShowPage = showPage;
+showPage = function(name) { _origShowPage(name); loadPage(name); };
+
+// Override doTopUp to use real API
+window.doTopUp = async function() {
+  const v = document.getElementById('topupAmount').value;
+  if (!v || parseInt(v) < 50000) { alert('Minimal top up Rp50.000'); return; }
+  try {
+    const res = await api('/api/wallet/topup', { method: 'POST', body: JSON.stringify({ amount: parseInt(v), payment_method: 'qris' }) });
+    if (res.success) {
+      alert('Top up berhasil! Reference: ' + res.reference_id);
+      document.getElementById('topupAmount').value = '';
+      loadPage('wallet');
+    } else { alert('Gagal: ' + (res.error || 'Coba lagi')); }
+  } catch(e) { alert('Koneksi gagal'); }
+};
+
+// Init on load
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('ac_token')) { loadDashboard(); } else { showLoginModal(); }
+});
+
+// Google Sign In
+function googleSignIn() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    alert('Google Sign-In sedang dimuat, coba lagi dalam beberapa detik');
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: 'GOOGLE_CLIENT_ID_PLACEHOLDER',
+    callback: handleGoogleResponse,
+    auto_select: false,
+  });
+  google.accounts.id.prompt();
+}
+
+async function handleGoogleResponse(response) {
+  try {
+    const res = await api('/api/auth/google-auth', {
+      method: 'POST',
+      body: JSON.stringify({ token: response.credential })
+    });
+    if (res.success && res.data && res.data.token) {
+      localStorage.setItem('ac_token', res.data.token);
+      localStorage.setItem('ac_user', JSON.stringify(res.data.user));
+      hideLoginModal(); loadDashboard();
+    } else {
+      document.getElementById('authError').textContent = res.error || 'Google sign-in gagal';
+    }
+  } catch (e) {
+    document.getElementById('authError').textContent = 'Koneksi gagal';
+  }
+}
+
+// Load Google Identity Services
+const gs = document.createElement('script');
+gs.src = 'https://accounts.google.com/gsi/client';
+gs.async = true; gs.defer = true;
+document.head.appendChild(gs);
+</script>
+
+<!-- Login Modal -->
+<div id="loginModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:400px;width:90%">
+    <h2 id="authTitle" style="text-align:center;margin-bottom:20px">Login ke AveraCloud</h2>
+    <div id="authError" style="color:var(--danger);text-align:center;margin-bottom:12px;font-size:14px"></div>
+    <!-- Google Sign In -->
+    <div style="text-align:center;margin-bottom:20px">
+      <div id="googleBtn" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#333;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;border:none" onclick="googleSignIn()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign in with Google
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:12px;color:var(--text-dim)">atau</span><div style="flex:1;height:1px;background:var(--border)"></div></div>
+    </div>
+    <form onsubmit="handleAuth(event)">
+      <div class="form-group" style="margin-bottom:12px"><label>Email</label><input type="email" id="authEmail" required placeholder="email@contoh.com"></div>
+      <div class="form-group" style="margin-bottom:12px"><label>Password</label><input type="password" id="authPassword" required placeholder="Password"></div>
+      <div id="authRegisterFields" style="display:none">
+        <div class="form-group" style="margin-bottom:12px"><label>Nama Lengkap</label><input type="text" id="authFullName" placeholder="Nama lengkap"></div>
+        <div class="form-group" style="margin-bottom:12px"><label>No. Telepon</label><input type="tel" id="authPhone" placeholder="08123456789"></div>
+      </div>
+      <button type="submit" id="authSubmitBtn" class="btn btn-primary" style="width:100%;margin-top:8px">Login</button>
+    </form>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-dim)"><a href="#" onclick="toggleAuthMode();return false" id="authToggleText">Belum punya akun? Daftar</a></p>
+  </div>
+</div>
+
+</body>
+</html>
