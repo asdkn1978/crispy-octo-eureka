@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/dashboard", "destination": "/dashboard.html" },
-    { "source": "/api/(.*)", "destination": "http://43.129.58.228:9001/api/$1" }
+    { "source": "/api/(.*)", "destination": "https://risks-whole-consider-recommendation.trycloudflare.com/api/$1" }
   ]
 }
