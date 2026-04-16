@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AveraCloud — Cloud Server Indonesia</title>
+<meta name="description" content="Cloud server Indonesia berbasis Tencent Cloud. Harga mulai Rp50.000/bulan. QRIS, GoPay, OVO. Support Bahasa Indonesia 24/7.">
 <style>
 :root{--bg-primary:#0a0f1e;--bg-card:#111827;--bg-card-hover:#1a2332;--accent:#22C55E;--accent-dark:#16a34a;--text:#f1f5f9;--text-muted:#94a3b8;--border:#1e293b;--shadow:0 4px 24px rgba(0,0,0,.3)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -11,22 +12,22 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg-
 a{color:inherit;text-decoration:none}
 button{font-family:inherit}
 
-/* Navbar */
 .navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,15,30,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.8rem 2rem;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;letter-spacing:-.02em}
 .logo svg{width:28px;height:28px}
 .nav-links{display:flex;align-items:center;gap:2rem}
 .nav-links a{color:var(--text-muted);font-size:.9rem;transition:color .2s}
 .nav-links a:hover{color:var(--text)}
-.btn{padding:.55rem 1.4rem;border-radius:8px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;transition:all .25s}
+.btn{padding:.55rem 1.4rem;border-radius:8px;font-size:.9rem;font-weight:600;border:none;cursor:pointer;transition:all .25s;display:inline-block;text-align:center}
 .btn-primary{background:var(--accent);color:#000}
 .btn-primary:hover{background:var(--accent-dark);transform:translateY(-1px);box-shadow:0 4px 16px rgba(34,197,94,.3)}
 .btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-white{background:#fff;color:#111}
+.btn-white:hover{background:#e2e8f0;transform:translateY(-1px)}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
 .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
 
-/* Hero */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 4rem;background:linear-gradient(135deg,#0a0f1e 0%,#0c1929 40%,#0a0f1e 100%);position:relative}
 .hero::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(34,197,94,.06) 0%,transparent 70%);pointer-events:none}
 .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;max-width:720px;margin:0 auto 1.2rem;letter-spacing:-.03em;line-height:1.15}
@@ -34,14 +35,16 @@ button{font-family:inherit}
 .hero p{color:var(--text-muted);font-size:clamp(1rem,2vw,1.15rem);max-width:540px;margin:0 auto 2rem}
 .hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 .hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:100px;padding:.4rem 1rem;font-size:.82rem;color:var(--accent);margin-bottom:1.5rem}
+.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:1.8rem;font-weight:800;color:var(--accent)}
+.hero-stat .label{font-size:.82rem;color:var(--text-muted)}
 
-/* Sections */
 section{padding:5rem 2rem}
 .section-title{text-align:center;font-size:1.8rem;font-weight:700;margin-bottom:.6rem}
 .section-sub{text-align:center;color:var(--text-muted);margin-bottom:3rem;max-width:520px;margin-left:auto;margin-right:auto}
 .container{max-width:1200px;margin:0 auto}
 
-/* Pricing */
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
 .plan-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.8rem;transition:all .3s;position:relative;display:flex;flex-direction:column}
 .plan-card:hover{border-color:rgba(34,197,94,.3);transform:translateY(-3px);box-shadow:var(--shadow)}
@@ -55,7 +58,6 @@ section{padding:5rem 2rem}
 .plan-price small{font-size:.85rem;font-weight:400;color:var(--text-muted)}
 .plan-card .btn{width:100%;padding:.65rem}
 
-/* Features */
 .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
 .feature-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.8rem;transition:all .3s}
 .feature-card:hover{border-color:rgba(34,197,94,.3);transform:translateY(-2px);box-shadow:var(--shadow)}
@@ -63,34 +65,50 @@ section{padding:5rem 2rem}
 .feature-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.4rem}
 .feature-card p{color:var(--text-muted);font-size:.9rem}
 
-/* Why Us */
 .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;max-width:900px;margin:0 auto}
 .why-item{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-align:center;transition:all .3s}
 .why-item:hover{border-color:rgba(34,197,94,.3);transform:translateY(-2px)}
 .why-icon{font-size:1.8rem;margin-bottom:.6rem}
 .why-item h3{font-size:.95rem;font-weight:600}
 
-/* Footer */
+/* CTA */
+.cta{background:linear-gradient(135deg,#0c1929,#0a0f1e);text-align:center;padding:5rem 2rem}
+.cta h2{font-size:1.8rem;font-weight:700;margin-bottom:1rem}
+.cta p{color:var(--text-muted);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+/* FAQ */
+.faq-list{max-width:700px;margin:0 auto}
+.faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:.8rem;overflow:hidden}
+.faq-q{padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;transition:background .2s}
+.faq-q:hover{background:var(--bg-card-hover)}
+.faq-q::after{content:'+';font-size:1.3rem;color:var(--accent);transition:transform .3s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{display:none;padding:0 1.2rem 1rem;color:var(--text-muted);font-size:.9rem;line-height:1.7}
+.faq-item.open .faq-a{display:block}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--bg-card);border:1px solid var(--accent);border-radius:10px;padding:1rem 1.4rem;color:var(--text);font-size:.9rem;z-index:200;transform:translateY(100px);opacity:0;transition:all .4s;box-shadow:var(--shadow);max-width:350px}
+.toast.show{transform:translateY(0);opacity:1}
+
 footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:.85rem}
-footer .footer-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:.8rem}
+footer .footer-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:.8rem;flex-wrap:wrap}
 footer .footer-links a{transition:color .2s}
 footer .footer-links a:hover{color:var(--accent)}
 
-/* Mobile */
 @media(max-width:768px){
   .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,15,30,.98);backdrop-filter:blur(12px);flex-direction:column;padding:1.5rem 2rem;gap:1rem;border-bottom:1px solid var(--border)}
   .nav-links.open{display:flex}
   .hamburger{display:flex}
   .pricing-grid{grid-template-columns:1fr}
   .features-grid{grid-template-columns:1fr}
+  .hero-stats{gap:1.5rem}
 }
-
 html{scroll-behavior:smooth}
 </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar">
   <a href="#" class="logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
@@ -100,170 +118,152 @@ html{scroll-behavior:smooth}
     <a href="#layanan">Layanan</a>
     <a href="#harga">Harga</a>
     <a href="#fitur">Fitur</a>
+    <a href="#faq">FAQ</a>
     <a href="#tentang">Tentang</a>
-    <a href="#harga" class="btn btn-primary" style="margin-left:.5rem">Mulai Sekarang</a>
+    <a href="/dashboard.html" class="btn btn-primary" style="margin-left:.5rem">Dashboard</a>
   </div>
-  <button class="hamburger" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- Hero -->
 <section class="hero" id="layanan">
   <div>
     <div class="hero-badge">🇮🇩 Server Singapore — Latency rendah dari Indonesia</div>
     <h1>Cloud Server Indonesia. <span class="highlight">Cepat, Stabil, Terjangkau.</span></h1>
-    <p>Server berbasis Tencent Cloud dengan harga terbaik. Support Indonesia 24/7 via WhatsApp.</p>
+    <p>Server berbasis Tencent Cloud dengan harga terbaik. Support Indonesia 24/7 via Telegram.</p>
     <div class="hero-buttons">
       <a href="#harga" class="btn btn-primary">Lihat Harga</a>
-      <a href="https://wa.me/" class="btn btn-outline">Hubungi Kami</a>
+      <a href="https://t.me/AveraCloudBot" target="_blank" class="btn btn-outline">💬 Hubungi Kami</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">99.9%</div><div class="label">Uptime</div></div>
+      <div class="hero-stat"><div class="num">< 30ms</div><div class="label">Latency</div></div>
+      <div class="hero-stat"><div class="num">24/7</div><div class="label">Support</div></div>
+      <div class="hero-stat"><div class="num">Rp50rb</div><div class="label">Mulai dari</div></div>
     </div>
   </div>
 </section>
 
-<!-- Pricing -->
 <section id="harga">
   <div class="container">
     <h2 class="section-title">Pilih Paket Server Kamu</h2>
     <p class="section-sub">Harga transparan, tanpa biaya tersembunyi. Semua paket sudah termasuk support.</p>
     <div class="pricing-grid">
-
       <div class="plan-card">
         <div class="plan-name">Starter S</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>2 Core</span></li>
-          <li>RAM <span>2 GB</span></li>
-          <li>Storage <span>40 GB SSD</span></li>
-          <li>Bandwidth <span>1 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>2 Core</span></li><li>RAM <span>2 GB</span></li><li>Storage <span>40 GB SSD</span></li><li>Bandwidth <span>1 Gbps</span></li></ul>
         <div class="plan-price">Rp50.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Starter S')">Pesan Sekarang</button>
       </div>
-
       <div class="plan-card">
         <div class="plan-name">Starter M</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>2 Core</span></li>
-          <li>RAM <span>2 GB</span></li>
-          <li>Storage <span>50 GB SSD</span></li>
-          <li>Bandwidth <span>1 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>2 Core</span></li><li>RAM <span>2 GB</span></li><li>Storage <span>50 GB SSD</span></li><li>Bandwidth <span>1 Gbps</span></li></ul>
         <div class="plan-price">Rp65.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Starter M')">Pesan Sekarang</button>
       </div>
-
       <div class="plan-card popular">
         <div class="popular-badge">Populer</div>
         <div class="plan-name">Standard S</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>2 Core</span></li>
-          <li>RAM <span>4 GB</span></li>
-          <li>Storage <span>60 GB SSD</span></li>
-          <li>Bandwidth <span>1.5 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>2 Core</span></li><li>RAM <span>4 GB</span></li><li>Storage <span>60 GB SSD</span></li><li>Bandwidth <span>1.5 Gbps</span></li></ul>
         <div class="plan-price">Rp80.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Standard S')">Pesan Sekarang</button>
       </div>
-
       <div class="plan-card">
         <div class="plan-name">Standard M</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>2 Core</span></li>
-          <li>RAM <span>4 GB</span></li>
-          <li>Storage <span>70 GB SSD</span></li>
-          <li>Bandwidth <span>1.5 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>2 Core</span></li><li>RAM <span>4 GB</span></li><li>Storage <span>70 GB SSD</span></li><li>Bandwidth <span>1.5 Gbps</span></li></ul>
         <div class="plan-price">Rp90.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Standard M')">Pesan Sekarang</button>
       </div>
-
       <div class="plan-card">
         <div class="plan-name">Pro S</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>2 Core</span></li>
-          <li>RAM <span>8 GB</span></li>
-          <li>Storage <span>80 GB SSD</span></li>
-          <li>Bandwidth <span>2 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>2 Core</span></li><li>RAM <span>8 GB</span></li><li>Storage <span>80 GB SSD</span></li><li>Bandwidth <span>2 Gbps</span></li></ul>
         <div class="plan-price">Rp130.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Pro S')">Pesan Sekarang</button>
       </div>
-
       <div class="plan-card">
         <div class="plan-name">Pro M</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>2 Core</span></li>
-          <li>RAM <span>8 GB</span></li>
-          <li>Storage <span>100 GB SSD</span></li>
-          <li>Bandwidth <span>2 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>2 Core</span></li><li>RAM <span>8 GB</span></li><li>Storage <span>100 GB SSD</span></li><li>Bandwidth <span>2 Gbps</span></li></ul>
         <div class="plan-price">Rp160.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Pro M')">Pesan Sekarang</button>
       </div>
-
       <div class="plan-card">
         <div class="plan-name">Enterprise</div>
-        <ul class="plan-specs">
-          <li>vCPU <span>4 Core</span></li>
-          <li>RAM <span>8 GB</span></li>
-          <li>Storage <span>180 GB SSD</span></li>
-          <li>Bandwidth <span>4 Gbps</span></li>
-        </ul>
+        <ul class="plan-specs"><li>vCPU <span>4 Core</span></li><li>RAM <span>8 GB</span></li><li>Storage <span>180 GB SSD</span></li><li>Bandwidth <span>4 Gbps</span></li></ul>
         <div class="plan-price">Rp325.000<small>/bln</small></div>
-        <a href="#" class="btn btn-primary">Pesan Sekarang</a>
+        <button class="btn btn-primary" onclick="orderPlan('Enterprise')">Pesan Sekarang</button>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- Features -->
 <section id="fitur">
   <div class="container">
     <h2 class="section-title">Fitur Unggulan</h2>
     <p class="section-sub">Semua yang kamu butuhkan untuk menjalankan server dengan tenang.</p>
     <div class="features-grid">
       <div class="feature-card"><div class="feature-icon">⚡</div><h3>Server Tencent Cloud</h3><p>Infrastruktur kelas dunia dengan uptime 99.9%</p></div>
-      <div class="feature-card"><div class="feature-icon">💳</div><h3>Bayar pakai QRIS</h3><p>GoPay, OVO, QRIS, Transfer — semua bisa</p></div>
-      <div class="feature-card"><div class="feature-icon">🇮🇩</div><h3>Support Bahasa Indonesia</h3><p>Tim support lokal via WhatsApp</p></div>
+      <div class="feature-card"><div class="feature-icon">💳</div><h3>Bayar pakai QRIS</h3><p>GoPay, OVO, QRIS, Transfer bank — semua bisa</p></div>
+      <div class="feature-card"><div class="feature-icon">🇮🇩</div><h3>Support Bahasa Indonesia</h3><p>Tim support lokal via Telegram 24/7</p></div>
       <div class="feature-card"><div class="feature-icon">🔒</div><h3>Keamanan Tinggi</h3><p>DDoS protection, firewall, backup otomatis</p></div>
-      <div class="feature-card"><div class="feature-icon">🤖</div><h3>AI API Marketplace</h3><p>Akses OpenAI, Claude, Gemini dalam satu dashboard</p></div>
-      <div class="feature-card"><div class="feature-icon">🔄</div><h3>Auto-Scaling</h3><p>Upgrade/downgrade server tanpa downtime</p></div>
+      <div class="feature-card"><div class="feature-icon">🤖</div><h3>AI-Powered Support</h3><p>Bot AI menjawab pertanyaan 24/7 via Telegram</p></div>
+      <div class="feature-card"><div class="feature-icon">🔄</div><h3>Upgrade Tanpa Downtime</h3><p>Upgrade/downgrade server kapan saja</p></div>
     </div>
   </div>
 </section>
 
-<!-- Why Us -->
+<section id="faq">
+  <div class="container">
+    <h2 class="section-title">Pertanyaan Umum</h2>
+    <p class="section-sub">Hal yang sering ditanyakan tentang AveraCloud.</p>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Apa itu AveraCloud?</div><div class="faq-a">AveraCloud adalah penyedia cloud server (VPS) dari Indonesia, berbasis infrastruktur Tencent Cloud Singapore. Kami menawarkan server dengan harga terjangkau dan support lokal bahasa Indonesia.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Bagaimana cara order?</div><div class="faq-a">Klik "Pesan Sekarang" atau chat kami di Telegram @AveraCloudBot. Pilih paket, bayar via QRIS/GoPay/OVO, server langsung aktif dalam hitungan menit.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Metode pembayaran apa saja?</div><div class="faq-a">QRIS, GoPay, OVO, Dana, dan transfer bank (BCA, Mandiri, BNI). Semua pembayaran diproses secara otomatis via Midtrans.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Server di mana lokasinya?</div><div class="faq-a">Semua server berlokasi di Singapore, memberikan latency rendah (~30ms) dari Indonesia.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Bisa refund?</div><div class="faq-a">Ya! Kami garansi uang kembali 7 hari. Jika tidak puas, hubungi support kami.</div></div>
+    </div>
+  </div>
+</section>
+
 <section id="tentang">
   <div class="container">
     <h2 class="section-title">Kenapa AveraCloud?</h2>
     <p class="section-sub">Kami hadir untuk developer dan bisnis Indonesia.</p>
     <div class="why-grid">
-      <div class="why-item"><div class="why-icon">💰</div><h3>Harga 10–15% lebih terjangkau</h3></div>
+      <div class="why-item"><div class="why-icon">💰</div><h3>Harga 10-15% lebih terjangkau</h3></div>
       <div class="why-item"><div class="why-icon">📱</div><h3>Payment lokal (QRIS, GoPay, OVO)</h3></div>
-      <div class="why-item"><div class="why-icon">💬</div><h3>Support via WhatsApp</h3></div>
-      <div class="why-item"><div class="why-icon">🚀</div><h3>Server Singapore (latency rendah dari Indonesia)</h3></div>
+      <div class="why-item"><div class="why-icon">💬</div><h3>Support via Telegram</h3></div>
+      <div class="why-item"><div class="why-icon">🚀</div><h3>Server Singapore (latency rendah)</h3></div>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
+<section class="cta">
+  <h2>Siap Mulai?</h2>
+  <p>Dapatkan server cloud Anda dalam hitungan menit. Tanpa ribet.</p>
+  <div class="cta-buttons">
+    <a href="https://t.me/AveraCloudBot" target="_blank" class="btn btn-primary">💬 Chat di Telegram</a>
+    <a href="/dashboard.html" class="btn btn-outline">Dashboard</a>
+  </div>
+</section>
+
 <footer>
   <div class="footer-links">
+    <a href="https://t.me/AveraCloudBot" target="_blank">Telegram</a>
     <a href="#">Kebijakan Privasi</a>
-    <a href="#">Syarat &amp; Ketentuan</a>
+    <a href="#">Syarat & Ketentuan</a>
   </div>
-  <p>&copy; 2025 AveraCloud. All rights reserved.</p>
+  <p>&copy; 2026 AveraCloud. All rights reserved.</p>
   <p>Dibuat dengan ❤️ di Indonesia</p>
 </footer>
 
+<div class="toast" id="toast"></div>
+
 <script>
-document.getElementById('hamburger').addEventListener('click',function(){
-  document.getElementById('navLinks').classList.toggle('open');
-});
-document.querySelectorAll('#navLinks a').forEach(function(a){
-  a.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open')});
-});
+document.getElementById('hamburger').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open')});
+document.querySelectorAll('#navLinks a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open')})});
+
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},3000)}
+function orderPlan(name){window.location.href='/dashboard.html'}
 </script>
 </body>
 </html>

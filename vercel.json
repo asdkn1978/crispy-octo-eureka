@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/dashboard.html", "destination": "/index.html" },
+    { "source": "/api/(.*)", "destination": "http://43.129.58.228:9001/api/$1" }
+  ]
+}
