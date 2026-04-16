@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/dashboard", "destination": "/dashboard.html" },
-    { "source": "/api/(.*)", "destination": "https://risks-whole-consider-recommendation.trycloudflare.com/api/$1" }
+    { "source": "/api/(.*)", "destination": "https://listed-offer-combo-fell.trycloudflare.com/api/$1" }
   ]
 }
