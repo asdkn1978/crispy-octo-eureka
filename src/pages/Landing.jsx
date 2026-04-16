@@ -1,6 +1,6 @@
 import { useAuth } from '../AuthContext';
 import { Cloud, Check, Zap, CreditCard, MessageCircle, Shield, Bot, RefreshCw, Globe, QrCode, Headphones, Rocket } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 
 const plans = [
@@ -33,7 +33,7 @@ const faqs = [
 export default function Landing() {
   const { user } = useAuth();
   const [openFaq, setOpenFaq] = useState(null);
-  if (user) return window.location.href = '/dashboard', null;
+  if (user) return <Navigate to="/dashboard" replace />;
 
   return (
     <div>

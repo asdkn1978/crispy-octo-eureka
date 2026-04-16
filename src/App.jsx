@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import Servers from './pages/Servers';
 import Wallet from './pages/Wallet';
 import Settings from './pages/Settings';
+import Invoice from './pages/Invoice';
 import Admin from './pages/Admin';
 import DashboardLayout from './components/DashboardLayout';
 
@@ -23,6 +24,7 @@ function AppRoutes() {
       <Route path="/servers" element={<RequireAuth><Servers /></RequireAuth>} />
       <Route path="/wallet" element={<RequireAuth><Wallet /></RequireAuth>} />
       <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+      <Route path="/invoices" element={<RequireAuth><Invoice /></RequireAuth>} />
       <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
