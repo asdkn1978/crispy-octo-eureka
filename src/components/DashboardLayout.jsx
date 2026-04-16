@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="dash-layout">
-      <aside className="dash-sidebar">
+      <aside className={"dash-sidebar" + (open ? " open" : "")}>
         <div className="dash-logo"><Cloud size={24} color="#22C55E" /><span>AveraCloud</span></div>
         <nav className="dash-nav">
           {links.map(l => (
