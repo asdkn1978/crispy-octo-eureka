@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://appointed-shirts-consciousness-forget.trycloudflare.com/api/$1" },
-    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "https://appointed-shirts-consciousness-forget.trycloudflare.com/api/$1" }
   ]
 }
