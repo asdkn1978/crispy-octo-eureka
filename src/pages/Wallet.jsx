@@ -8,6 +8,7 @@ export default function Wallet() {
   const [loading, setLoading] = useState(true);
   const [topupAmount, setTopupAmount] = useState('');
   const [showTopup, setShowTopup] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useState(null);
 
   async function load() {
     const [w, t] = await Promise.all([api('/api/wallet'), api('/api/wallet/transactions')]);
@@ -20,11 +21,18 @@ export default function Wallet() {
 
   async function handleTopup() {
     const amount = parseInt(topupAmount);
-    if (!amount || amount < 10000) return;
+    if (!amount || amount < 50000) return;
     const res = await api('/api/wallet/topup', { method: 'POST', body: JSON.stringify({ amount }) });
-    if (res.data?.payment_url) { window.open(res.data.payment_url, '_blank'); }
-    setShowTopup(false);
-    load();
+    if (res.snap_token || res.redirect_url) {
+      window.open(res.redirect_url || res.snap_token, '_blank');
+      setShowTopup(false);
+    } else if (res.manual) {
+      setPaymentInfo({ ...res, amount });
+      setShowTopup(false);
+    } else {
+      setShowTopup(false);
+      load();
+    }
   }
 
   return (
@@ -79,6 +87,41 @@ export default function Wallet() {
               <button onClick={() => setShowTopup(false)} style={{ flex: 1, padding: 10, background: 'transparent', border: '1px solid #1e293b', color: '#f1f5f9', borderRadius: 8, cursor: 'pointer' }}>Batal</button>
               <button onClick={handleTopup} style={{ flex: 1, padding: 10, background: '#22C55E', color: '#000', fontWeight: 600, border: 'none', borderRadius: 8, cursor: 'pointer' }}>Bayar</button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Payment Confirmation Modal */}
+      {paymentInfo && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div style={{ background: '#111827', border: '1px solid #1e293b', borderRadius: 16, padding: 28, width: '100%', maxWidth: 400 }}>
+            <h3 style={{ color: '#f1f5f9', fontSize: 18, marginBottom: 4 }}>💰 Konfirmasi Pembayaran</h3>
+            <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 20 }}>Transfer ke rekening berikut, lalu kirim bukti ke Telegram bot @AveraCloudBot</p>
+            
+            <div style={{ background: '#0a0f1e', border: '1px solid #1e293b', borderRadius: 12, padding: 20, marginBottom: 16 }}>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ color: '#94a3b8', fontSize: 11, textTransform: 'uppercase', marginBottom: 4 }}>Bank</div>
+                <div style={{ color: '#f1f5f9', fontSize: 16, fontWeight: 600 }}>{paymentInfo.bank?.name} — {paymentInfo.bank?.holder}</div>
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ color: '#94a3b8', fontSize: 11, textTransform: 'uppercase', marginBottom: 4 }}>Nomor Rekening</div>
+                <div style={{ color: '#22C55E', fontSize: 20, fontWeight: 700, fontFamily: 'monospace', letterSpacing: 1 }}>{paymentInfo.bank?.account}</div>
+              </div>
+              <div>
+                <div style={{ color: '#94a3b8', fontSize: 11, textTransform: 'uppercase', marginBottom: 4 }}>Jumlah Transfer</div>
+                <div style={{ color: '#f59e0b', fontSize: 20, fontWeight: 700 }}>Rp{Number(paymentInfo.amount).toLocaleString('id-ID')}</div>
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(34,197,94,.08)', border: '1px solid rgba(34,197,94,.2)', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+              <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>📌 Setelah transfer, kirim bukti screenshot ke <strong style={{ color: '#22C55E' }}>@AveraCloudBot</strong> di Telegram dengan perintah <code style={{ background: '#0a0f1e', padding: '2px 6px', borderRadius: 4, color: '#f1f5f9', fontSize: 11 }}>/topup</code></p>
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ color: '#94a3b8', fontSize: 11, textTransform: 'uppercase', marginBottom: 4 }}>Reference ID</div>
+              <code style={{ color: '#64748b', fontSize: 12 }}>{paymentInfo.reference_id}</code>
+            </div>
+
+            <button onClick={() => { setPaymentInfo(null); setTopupAmount(''); load(); }} style={{ width: '100%', padding: 12, background: '#22C55E', color: '#000', fontWeight: 600, border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>Sudah Dibayar</button>
           </div>
         </div>
       )}
