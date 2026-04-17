@@ -121,7 +121,7 @@ export default function Wallet() {
               <code style={{ color: '#64748b', fontSize: 12 }}>{paymentInfo.reference_id}</code>
             </div>
 
-            <button onClick={() => { setPaymentInfo(null); setTopupAmount(''); load(); }} style={{ width: '100%', padding: 12, background: '#22C55E', color: '#000', fontWeight: 600, border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>Sudah Dibayar</button>
+            <button onClick={() => { setPaymentInfo(null); setTopupAmount(''); load(); window.open('https://t.me/AveraCloudBot?start=topup', '_blank'); }} style={{ width: '100%', padding: 12, background: '#22C55E', color: '#000', fontWeight: 600, border: 'none', borderRadius: 8, fontSize: 14, cursor: 'pointer' }}>Sudah Dibayar → Kirim Bukti</button>
           </div>
         </div>
       )}
