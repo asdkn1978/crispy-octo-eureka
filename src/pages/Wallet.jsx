@@ -64,7 +64,12 @@ export default function Wallet() {
               <tr key={i} style={{ borderBottom: '1px solid #1e293b' }}>
                 <td style={{ padding: '10px 16px', color: '#f1f5f9', fontSize: 13 }}>{t.description}</td>
                 <td style={{ padding: '10px 16px', textAlign: 'right', color: t.type === 'credit' ? '#22C55E' : '#ef4444', fontSize: 13 }}>{t.type === 'credit' ? '+' : '-'}Rp{Number(t.amount).toLocaleString('id-ID')}</td>
-                <td style={{ padding: '10px 16px', textAlign: 'center' }}><span style={{ padding: '2px 8px', borderRadius: 100, fontSize: 11, background: t.status === 'completed' ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)', color: t.status === 'completed' ? '#22C55E' : '#f59e0b' }}>{t.status}</span></td>
+                <td style={{ padding: '10px 16px', textAlign: 'center' }}>
+                  <span style={{ padding: '2px 8px', borderRadius: 100, fontSize: 11, background: t.status === 'completed' ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)', color: t.status === 'completed' ? '#22C55E' : '#f59e0b' }}>{t.status}</span>
+                  {t.status === 'pending' && (
+                    <a href='https://t.me/AveraCloudBot?start=topup' target='_blank' rel='noopener noreferrer' style={{ marginLeft: 6, padding: '2px 8px', borderRadius: 100, fontSize: 11, background: 'rgba(59,130,246,.15)', color: '#3b82f6', textDecoration: 'none' }}>💬 Tanya Admin</a>
+                  )}
+                </td>
                 <td style={{ padding: '10px 16px', textAlign: 'right', color: '#94a3b8', fontSize: 12 }}>{new Date(t.created_at).toLocaleDateString('id-ID')}</td>
               </tr>
             ))}</tbody>
