@@ -1,5 +1,2 @@
-import { LoginModal } from '../components/LoginModal';
-
-export default function Dashboard() {
-  return <LoginModal />;
-}
+// Deprecated — use DashboardPage.jsx instead
+export { default } from './DashboardPage';

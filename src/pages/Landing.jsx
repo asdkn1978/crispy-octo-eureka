@@ -1,5 +1,5 @@
 import { useAuth } from '../AuthContext';
-import { Cloud, Check, Zap, CreditCard, MessageCircle, Shield, Bot, RefreshCw, Globe, QrCode, Headphones, Rocket } from 'lucide-react';
+import { Cloud, Check, Zap, CreditCard, MessageCircle, Shield, Bot, RefreshCw, Globe, Headphones, Menu, X } from 'lucide-react';
 import { Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -33,6 +33,7 @@ const faqs = [
 export default function Landing() {
   const { user } = useAuth();
   const [openFaq, setOpenFaq] = useState(null);
+  const [mobileMenu, setMobileMenu] = useState(false);
   if (user) return <Navigate to="/dashboard" replace />;
 
   return (
@@ -40,13 +41,25 @@ export default function Landing() {
       {/* Navbar */}
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(10,15,30,.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #1e293b', padding: '.8rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 18, color: '#f1f5f9' }}><Cloud size={24} color="#22C55E" />AveraCloud</div>
-        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+        {/* Desktop */}
+        <div className="nav-links-desktop" style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
           <a href="#harga" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none' }}>Harga</a>
           <a href="#fitur" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none' }}>Fitur</a>
           <a href="#faq" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none' }}>FAQ</a>
           <Link to="/dashboard" style={{ padding: '8px 20px', background: '#22C55E', color: '#000', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>Dashboard</Link>
         </div>
+        {/* Mobile hamburger */}
+        <button className="nav-hamburger" onClick={() => setMobileMenu(!mobileMenu)} style={{ display: 'none', background: 'none', border: 'none', color: '#f1f5f9', cursor: 'pointer' }}>{mobileMenu ? <X size={24} /> : <Menu size={24} />}</button>
       </nav>
+      {/* Mobile menu */}
+      {mobileMenu && (
+        <div style={{ position: 'fixed', top: 56, left: 0, right: 0, zIndex: 99, background: 'rgba(10,15,30,.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #1e293b', padding: '1rem 2rem', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <a href="#harga" onClick={() => setMobileMenu(false)} style={{ color: '#94a3b8', fontSize: 15, textDecoration: 'none' }}>Harga</a>
+          <a href="#fitur" onClick={() => setMobileMenu(false)} style={{ color: '#94a3b8', fontSize: 15, textDecoration: 'none' }}>Fitur</a>
+          <a href="#faq" onClick={() => setMobileMenu(false)} style={{ color: '#94a3b8', fontSize: 15, textDecoration: 'none' }}>FAQ</a>
+          <Link to="/dashboard" onClick={() => setMobileMenu(false)} style={{ padding: '10px 20px', background: '#22C55E', color: '#000', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none', textAlign: 'center' }}>Dashboard</Link>
+        </div>
+      )}
 
       {/* Hero */}
       <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '7rem 2rem 4rem', background: 'linear-gradient(135deg,#0a0f1e,#0c1929 40%,#0a0f1e)' }}>

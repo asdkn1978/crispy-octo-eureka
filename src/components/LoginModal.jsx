@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
@@ -6,6 +7,7 @@ const GOOGLE_CLIENT_ID = '114508562779-vnqo2oldbqqsldslroo1c6rm61fpr95a.apps.goo
 
 export default function LoginModal() {
   const { login, user } = useAuth();
+  const navigate = useNavigate();
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,8 +15,9 @@ export default function LoginModal() {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
-  if (user) return null;
+  if (user) { navigate('/dashboard', { replace: true }); return null; }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,19 +33,26 @@ export default function LoginModal() {
         res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
         res = await res.json();
       }
-      if (res.success && res.data?.token) { login(res.data.token, res.data.user); }
-      else { setError(res.error || 'Gagal'); }
+      if (res.success && res.data?.token) {
+        login(res.data.token, res.data.user);
+        navigate('/dashboard', { replace: true });
+      } else { setError(res.error || 'Gagal'); }
     } catch { setError('Koneksi gagal'); }
     setLoading(false);
   }
 
   async function handleGoogle(response) {
+    setError('');
+    setGoogleLoading(true);
     try {
       const res = await fetch('/api/auth/google-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: response.credential }) });
       const data = await res.json();
-      if (data.success && data.data?.token) login(data.data.token, data.data.user);
-      else setError(data.error || 'Google login gagal');
+      if (data.success && data.data?.token) {
+        login(data.data.token, data.data.user);
+        navigate('/dashboard', { replace: true });
+      } else setError(data.error || 'Google login gagal');
     } catch { setError('Koneksi gagal'); }
+    setGoogleLoading(false);
   }
 
   return (
@@ -51,7 +61,8 @@ export default function LoginModal() {
         <div style={{ background: '#111827', borderRadius: 16, padding: 32, width: '100%', maxWidth: 400, border: '1px solid #1e293b' }}>
           <h2 style={{ color: '#f1f5f9', fontSize: 20, marginBottom: 4 }}>{mode === 'login' ? 'Login ke AveraCloud' : 'Buat Akun Baru'}</h2>
           <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 24 }}>{mode === 'login' ? 'Masuk untuk mengelola server kamu' : 'Daftar gratis, langsung aktif'}</p>
-          <div style={{ marginBottom: 20, textAlign: 'center' }}>
+          <div style={{ marginBottom: 20, textAlign: 'center', position: 'relative' }}>
+            {googleLoading && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(17,24,39,.8)', borderRadius: 8, zIndex: 10, color: '#94a3b8', fontSize: 13 }}>Memproses...</div>}
             <GoogleLogin onSuccess={handleGoogle} onError={() => setError('Google login gagal')} text={mode === 'login' ? 'signin_with' : 'signup_with'} shape="rectangular" size="large" theme="filled_blue" width="100%" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, color: '#94a3b8', fontSize: 12 }}>── atau ──</div>
@@ -77,7 +88,7 @@ export default function LoginModal() {
               </label>
             )}
             {error && <p style={{ color: '#ef4444', fontSize: 12, marginBottom: 12 }}>{error}</p>}
-            <button type="submit" disabled={loading} style={{ width: '100%', padding: 12, background: '#22C55E', color: '#000', fontWeight: 600, border: 'none', borderRadius: 8, fontSize: 14, cursor: loading ? 'wait' : 'pointer' }}>{loading ? 'Memuat...' : mode === 'login' ? 'Login' : 'Daftar'}</button>
+            <button type="submit" disabled={loading} style={{ width: '100%', padding: 12, background: '#22C55E', color: '#000', fontWeight: 600, border: 'none', borderRadius: 8, fontSize: 14, cursor: loading ? 'wait' : 'pointer', opacity: loading ? .6 : 1 }}>{loading ? 'Memuat...' : mode === 'login' ? 'Login' : 'Daftar'}</button>
           </form>
           <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: '#94a3b8' }}>
             {mode === 'login' ? 'Belum punya akun?' : 'Sudah punya akun?'}{' '}
