@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import api from '../api';
 import { Plus, RotateCw, Trash2, Server, Cpu, HardDrive, Hammer, Eye, EyeOff, Copy, Check, Terminal, Camera, Globe, Clock, Activity, Database, ArrowUpDown } from 'lucide-react';
+import WebTerminal from '../components/WebTerminal';
 
 const planOptions = [
   { id: 'starter_s', name: 'Starter S', price: 50000, cpu: '2 Core', ram: '2 GB', storage: '40 GB SSD', bw: '1 Gbps', ramGb: 2, storageGb: 40 },
@@ -114,6 +115,7 @@ export default function Servers() {
   const [expandedServer, setExpandedServer] = useState(null);
   const [creating, setCreating] = useState(false);
   const [showPasswords, setShowPasswords] = useState({});
+  const [terminalServer, setTerminalServer] = useState(null);
 
   async function loadServers() {
     const res = await api('/api/vps');
@@ -330,7 +332,7 @@ export default function Servers() {
                       <ConfirmButton icon={RotateCw} label="Restart" color="#3b82f6" border="rgba(59,130,246,.2)" confirmMsg="Yakin restart server?" onConfirm={() => handleRestart(i)} disabled={s.status === 'creating'} />
                       <ConfirmButton icon={Hammer} label="Rebuild" color="#fbbf24" border="rgba(251,191,36,.2)" confirmMsg="SEMUA DATA AKAN HILANG. Lanjutkan?" onConfirm={() => handleRebuild(i)} disabled={s.status === 'creating'} />
                       <ConfirmButton icon={Trash2} label="Delete" color="#ef4444" border="rgba(239,68,68,.2)" confirmMsg="Server akan dihapus permanen. Lanjutkan?" onConfirm={() => handleDelete(i)} disabled={s.status === 'creating'} />
-                      <ConfirmButton icon={Terminal} label="Console" color="#94a3b8" border="rgba(148,163,184,.2)" disabled tooltip="Coming soon" />
+                      <ConfirmButton icon={Terminal} label="Console" color="#22C55E" border="rgba(34,197,94,.2)" onConfirm={() => setTerminalServer(s)} disabled={s.status !== 'running'} tooltip={s.status !== 'running' ? 'Server harus running' : 'Buka terminal'} />
                       <ConfirmButton icon={Camera} label="Snapshot" color="#94a3b8" border="rgba(148,163,184,.2)" disabled tooltip="Coming soon" />
                     </div>
                   </div>
@@ -339,6 +341,11 @@ export default function Servers() {
             );
           })}
         </div>
+      )}
+
+      {/* WebTerminal overlay */}
+      {terminalServer && (
+        <WebTerminal server={terminalServer} onClose={() => setTerminalServer(null)} />
       )}
 
       {/* Create Modal */}
