@@ -155,7 +155,7 @@ export default function Support() {
       const res = await fetch('/api/support/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage, history: chatMessages })
+        body: JSON.stringify({ message: userMessage, history: chatMessages.map(m => ({ role: m.role, content: m.content })) })
       });
       const data = await res.json();
       setChatMessages([...newMessages, { role: 'assistant', content: data.reply }]);
