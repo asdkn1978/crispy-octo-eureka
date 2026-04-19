@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://appointed-shirts-consciousness-forget.trycloudflare.com/api/$1" },
+    { "source": "/api/(.*)", "destination": "https://timeline-passes-burton-reaches.trycloudflare.com/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
