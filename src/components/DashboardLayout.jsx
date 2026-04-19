@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
-import { LayoutDashboard, Server, Wallet, Settings, LogOut, Menu, Cloud, FileText, Package } from 'lucide-react';
+import { LayoutDashboard, Server, Wallet, Settings, LogOut, Menu, Cloud, FileText, Package, HelpCircle } from 'lucide-react';
 
 const links = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -9,6 +9,7 @@ const links = [
   { to: '/apps', icon: Package, label: 'Apps' },
   { to: '/wallet', icon: Wallet, label: 'Wallet' },
   { to: '/invoices', icon: FileText, label: 'Invoice' },
+  { to: '/support', icon: HelpCircle, label: 'Support' },
   { to: '/settings', icon: Settings, label: 'Pengaturan' },
 ];
 
