@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import LoginModal from './components/LoginModal';
 import DashboardPage from './pages/DashboardPage';
 import Servers from './pages/Servers';
+import Apps from './pages/Apps';
 import Wallet from './pages/Wallet';
 import Settings from './pages/Settings';
 import Invoice from './pages/Invoice';
@@ -22,6 +23,7 @@ function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
       <Route path="/servers" element={<RequireAuth><Servers /></RequireAuth>} />
+      <Route path="/apps" element={<RequireAuth><Apps /></RequireAuth>} />
       <Route path="/wallet" element={<RequireAuth><Wallet /></RequireAuth>} />
       <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
       <Route path="/invoices" element={<RequireAuth><Invoice /></RequireAuth>} />

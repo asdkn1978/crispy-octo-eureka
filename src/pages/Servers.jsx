@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api';
-import { Plus, RotateCw, Trash2, Server, Cpu, HardDrive, Hammer, Eye, EyeOff, Copy, Check, Terminal, Camera, Globe, Clock, Activity, Database, ArrowUpDown } from 'lucide-react';
+import { Plus, RotateCw, Trash2, Server, Cpu, HardDrive, Hammer, Eye, EyeOff, Copy, Check, Terminal, Camera, Globe, Clock, Activity, Database, ArrowUpDown, Package, ExternalLink } from 'lucide-react';
 import WebTerminal from '../components/WebTerminal';
 
 const planOptions = [
@@ -116,6 +117,7 @@ export default function Servers() {
   const [creating, setCreating] = useState(false);
   const [showPasswords, setShowPasswords] = useState({});
   const [terminalServer, setTerminalServer] = useState(null);
+  const [installedApps, setInstalledApps] = useState([]);
 
   async function loadServers() {
     const res = await api('/api/vps');
@@ -130,6 +132,17 @@ export default function Servers() {
     setLoading(false);
   }
 
+  async function loadInstalledApps() {
+    try {
+      const res = await api('/api/apps/installed/list');
+      if (res.success) {
+        setInstalledApps(res.data || []);
+      }
+    } catch (err) {
+      console.error('Error loading installed apps:', err);
+    }
+  }
+
   const simulateStatus = useCallback(() => {
     setServers(prev => prev.map(s => {
       if (s.status === 'creating' && Date.now() - s.createdAt > 30000) {
@@ -139,7 +152,7 @@ export default function Servers() {
     }));
   }, []);
 
-  useEffect(() => { loadServers(); }, []);
+  useEffect(() => { loadServers(); loadInstalledApps(); }, []);
   useEffect(() => {
     const iv = setInterval(simulateStatus, 5000);
     return () => clearInterval(iv);
@@ -326,6 +339,53 @@ export default function Servers() {
                         </div>
                       </div>
                     )}
+
+                    {/* Installed Apps */}
+                    <div style={{ marginBottom: 16, padding: '12px 14px', background: '#0a0f1e', borderRadius: 10 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <div style={{ color: '#f1f5f9', fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <Package size={14} color="#22C55E" /> Installed Apps
+                        </div>
+                        {s.status === 'running' && (
+                          <Link
+                            to="/apps"
+                            style={{ color: '#22C55E', fontSize: 11, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+                          >
+                            <Plus size={12} /> Install App
+                          </Link>
+                        )}
+                      </div>
+                      {installedApps.filter(app => app.server_id === s.id).length === 0 ? (
+                        <div style={{ color: '#64748b', fontSize: 11, padding: '8px 0' }}>
+                          {s.status === 'running' ? 'No apps installed yet. Click "Install App" to add one.' : 'Server must be running to install apps.'}
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {installedApps.filter(app => app.server_id === s.id).map(app => {
+                            const statusConfig = { installing: { color: '#fbbf24', label: 'Installing' }, installed: { color: '#22C55E', label: 'Running' }, failed: { color: '#ef4444', label: 'Failed' } }[app.status] || { color: '#64748b', label: app.status };
+                            return (
+                              <div key={app.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', background: '#111827', borderRadius: 6, border: '1px solid #1e293b' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: statusConfig.color }} />
+                                  <span style={{ color: '#f1f5f9', fontSize: 12, fontWeight: 500 }}>{app.app_name}</span>
+                                  <span style={{ color: '#64748b', fontSize: 10 }}>({statusConfig.label})</span>
+                                </div>
+                                {app.status === 'installed' && app.port && (
+                                  <a
+                                    href={`http://${app.server_ip}:${app.port}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ color: '#22C55E', fontSize: 11, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+                                  >
+                                    <ExternalLink size={10} /> Open
+                                  </a>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
 
                     {/* Action buttons */}
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
