@@ -10,6 +10,7 @@ import Settings from './pages/Settings';
 import Invoice from './pages/Invoice';
 import Admin from './pages/Admin';
 import Support from './pages/Support';
+import AI from './pages/AI';
 import DashboardLayout from './components/DashboardLayout';
 
 function RequireAuth({ children }) {
@@ -29,6 +30,7 @@ function AppRoutes() {
       <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
       <Route path="/invoices" element={<RequireAuth><Invoice /></RequireAuth>} />
       <Route path="/support" element={<RequireAuth><Support /></RequireAuth>} />
+      <Route path="/ai" element={<RequireAuth><AI /></RequireAuth>} />
       <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

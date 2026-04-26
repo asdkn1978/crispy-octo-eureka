@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
-import { LayoutDashboard, Server, Wallet, Settings, LogOut, Menu, Cloud, FileText, Package, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, Server, Wallet, Settings, LogOut, Menu, Cloud, FileText, Package, HelpCircle, Bot } from 'lucide-react';
 
 const links = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/servers', icon: Server, label: 'Server' },
   { to: '/apps', icon: Package, label: 'Apps' },
+  { to: '/ai', icon: Bot, label: 'AI API' },
   { to: '/wallet', icon: Wallet, label: 'Wallet' },
   { to: '/invoices', icon: FileText, label: 'Invoice' },
   { to: '/support', icon: HelpCircle, label: 'Support' },
